@@ -1,0 +1,143 @@
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report
+
+     
+
+df=pd.read_csv("student_course_reviews_500.csv")
+df.head()
+     
+review_text	sentiment
+0	Loved how the professor connected theoretical ...	Positive
+1	Lectures often went off-topic and missed core ...	Negative
+2	Syllabus was updated with latest tools and ind...	Positive
+3	Great peer learning environment and active stu...	Positive
+4	Neutral opinion overall, it meets basic course...	Neutral
+
+df.shape
+     
+(500, 2)
+
+df.info()
+     
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 500 entries, 0 to 499
+Data columns (total 2 columns):
+ #   Column       Non-Null Count  Dtype 
+---  ------       --------------  ----- 
+ 0   review_text  475 non-null    object
+ 1   sentiment    485 non-null    object
+dtypes: object(2)
+memory usage: 7.9+ KB
+
+df.isna().sum()
+     
+0
+review_text	25
+sentiment	15
+
+dtype: int64
+
+df.isnull().sum()
+     
+0
+review_text	25
+sentiment	15
+
+dtype: int64
+
+df_clean=df.dropna()
+df_clean.shape
+     
+(460, 2)
+
+df_clean.isnull().sum()
+     
+0
+review_text	0
+sentiment	0
+
+dtype: int64
+
+df_clean['sentiment'].unique()
+     
+array(['Positive', 'Negative', 'Neutral'], dtype=object)
+
+df_clean['sentiment'].unique()
+     
+array(['Positive', 'Negative', 'Neutral'], dtype=object)
+
+df_clean['sentiment'].value_counts()
+     
+count
+sentiment	
+Positive	184
+Negative	177
+Neutral	99
+
+dtype: int64
+
+x=df_clean['review_text']
+y=df_clean['sentiment']
+     
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
+     
+
+vectorizer=CountVectorizer()
+x_train_vec=vectorizer.fit_transform(x_train)
+x_test_vec=vectorizer.transform(x_test)
+     
+
+from sklearn.metrics import accuracy_score,classification_report
+df.shape
+df.info()
+df.isnull()
+df.isnull().sum()
+df_clean=df.dropna()
+df_clean.shape
+df_clean.isna().sum()
+df_clean['sentiment'].unique()
+df_clean['sentiment'].value_counts()
+x=df_clean['review_text']
+y=df_clean['sentiment']
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
+vectorizer=CountVectorizer()
+x_train_vec=vectorizer.fit_transform(x_train)
+x_test_vec=vectorizer.transform(x_test)
+model=MultinomialNB()
+model.fit(x_train_vec,y_train)
+     
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 500 entries, 0 to 499
+Data columns (total 2 columns):
+ #   Column       Non-Null Count  Dtype 
+---  ------       --------------  ----- 
+ 0   review_text  475 non-null    object
+ 1   sentiment    485 non-null    object
+dtypes: object(2)
+memory usage: 7.9+ KB
+MultinomialNB()
+In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+
+new_reviews=[
+    "the professor explained every single concept clearly"
+    "exams were unresonably long and grading was completely unfair"
+    "decent lectures, matched standard course content"
+    ]
+new_reviews_vectorized=vectorizer.transform(new_reviews)
+predictions=model.predict(new_reviews_vectorized)
+for review,pred in zip(new_reviews,predictions):
+    print(f"Review: {review}\nPredicted Sentiment: {pred}\n")
+     
+Review: the professor explained every single concept clearlyexams were unresonably long and grading was completely unfairdecent lectures, matched standard course content
+Predicted Sentiment: Negative
+
+
+
+     
