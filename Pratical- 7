@@ -1,0 +1,39 @@
+
+from sklearn.naive_bayes import BernoulliNB
+X=[
+    [1,1,1],
+    [1,1,0],
+    [1,0,1],
+    [0,1,0],
+    [0,1,1],
+    [0,0,0]
+]
+
+Y=[
+    'Flu',
+    'Flu',
+    'Flu',
+    'Cold',
+    'Cold',
+    'Cold'
+]
+    
+model = BernoulliNB()
+model.fit(X,Y)
+BernoulliNB()
+In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+patient = [[1,1,1]]
+prediction = model.predict(patient)
+print("predicted diagnosis:", prediction[0])
+predicted diagnosis: Flu
+patient2 = [[0,1,0]]
+prediction2 = model.predict(patient2)
+print("predicted diagnosis:", prediction2[0])
+predicted diagnosis: Cold
+probabilities = model.predict_proba(patient)
+for diagnosis, probability in zip(model.classes_, probabilities[0]):
+    print(diagnosis,"=",round(probability,2))
+Cold = 0.14
+Flu = 0.86
+ 
