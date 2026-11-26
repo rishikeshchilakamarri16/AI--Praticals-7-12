@@ -1,0 +1,139 @@
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import classification_report
+
+     
+
+df=pd.read_csv("ecommerce_product_dataset_650.csv")
+df.head()
+     
+product_description	category
+0	Comfortable women's high waisted denim jeans w...	Clothing
+1	Biography of an influential tech leader and co...	Books
+2	Curved gaming monitor 144Hz refresh rate with ...	Electronics
+3	Interactive children's picture book with color...	Books
+4	NaN	Home & Kitchen
+
+df.shape
+     
+(650, 2)
+
+df.info()
+     
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 650 entries, 0 to 649
+Data columns (total 2 columns):
+ #   Column               Non-Null Count  Dtype 
+---  ------               --------------  ----- 
+ 0   product_description  612 non-null    object
+ 1   category             626 non-null    object
+dtypes: object(2)
+memory usage: 10.3+ KB
+
+df.isna().sum()
+     
+0
+product_description	38
+category	24
+
+dtype: int64
+
+df.isnull().sum()
+     
+0
+product_description	38
+category	24
+
+dtype: int64
+
+df_clean=df.dropna()
+df_clean.shape
+     
+(591, 2)
+
+df_clean.isnull().sum()
+     
+0
+product_description	0
+category	0
+
+dtype: int64
+
+df_clean['category'].unique()
+     
+array(['Clothing', 'Books', 'Electronics', 'Home & Kitchen'], dtype=object)
+
+df_clean['category'].value_counts()
+     
+count
+category	
+Electronics	173
+Home & Kitchen	145
+Clothing	144
+Books	129
+
+dtype: int64
+
+x=df_clean['product_description']
+y=df_clean['category']
+     
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
+
+     
+
+vectorizer=CountVectorizer()
+x_train_vec=vectorizer.fit_transform(x_train)
+x_test_vec=vectorizer.transform(x_test)
+     
+
+from sklearn.metrics import accuracy_score,classification_report
+df.shape
+df.info()
+df.isnull()
+df.isnull().sum()
+df_clean=df.dropna()
+df_clean.shape
+df_clean.isna().sum()
+df_clean['category'].unique()
+df_clean['category'].value_counts()
+x=df_clean['product_description']
+y=df_clean['category']
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42)
+vectorizer=CountVectorizer()
+x_train_vec=vectorizer.fit_transform(x_train)
+x_test_vec=vectorizer.transform(x_test)
+model=MultinomialNB()
+model.fit(x_train_vec,y_train)
+     
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 650 entries, 0 to 649
+Data columns (total 2 columns):
+ #   Column               Non-Null Count  Dtype 
+---  ------               --------------  ----- 
+ 0   product_description  612 non-null    object
+ 1   category             626 non-null    object
+dtypes: object(2)
+memory usage: 10.3+ KB
+MultinomialNB()
+In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook.
+On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.
+
+new_description=[
+    "smart tv with hdr support"
+   ]
+new_description_vectorized=vectorizer.transform(new_description)
+predictions=model.predict(new_description_vectorized)
+for description,pred in zip(new_description,predictions):
+    print(f"Description: {description}\nPredicted Category: {pred}\n")
+     
+Description: smart tv with hdr support
+Predicted Category: Electronics
+
+
+
+     
